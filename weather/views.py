@@ -1,28 +1,11 @@
-import json
-
 import requests
-from django.http import JsonResponse
-
-
 from rest_framework import generics
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from weather.models import Weather, Country, Location
+from weather.models import Country
+from weather.models import Location
+from weather.models import Weather
 from weather.serializers import WeatherSerializer
-
-
-@api_view(['GET'])
-def snippet_list(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
-    if request.method == 'GET':
-        API_KEY = "4fa4301a4a602a89d861783928c0a919"
-        CITY_NAME = "Odessa"
-        url = "http://api.openweathermap.org/data/2.5/weather?q={}&appid={}".format(CITY_NAME, API_KEY)
-        resp = requests.get(url)
-        return JsonResponse(json.loads(resp.text))
 
 
 class WeatherListViewSet(generics.ListAPIView):
@@ -47,10 +30,13 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
             resp = requests.get(url).json()
         else:
             Response("ERROR")
-        country = resp['sys']['country']
+        country_name = resp['sys']['country']
         country, _ = Country.objects.get_or_create(
-            name=country,
-            defaults={'flag': 'TBD', 'wiki_page': 'TBD'}
+            name=country_name,
+            defaults={
+                'flag': 'https://www.countryflags.io/{}/shiny/64.png'.format(country_name),
+                'wiki_page': 'TBD'
+            }
         )
         location, _ = Location.objects.get_or_create(
             longitude=resp['coord']['lon'],
@@ -72,7 +58,3 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
         queryset = Weather.objects.get(id=weather.id)
         serializer = WeatherSerializer(queryset)
         return Response(serializer.data)
-
-
-# Latitude	46.469391
-# Longitude	30.740883
