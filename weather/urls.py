@@ -11,5 +11,6 @@ from . import views
 urlpatterns = [
     path('', views.WeatherViewSet.as_view()),
     path('<slug:city>/', views.WeatherCreateViewSet.as_view({'get': 'retrieve'})),
+    path('<int:lat>/<int:lon>/', views.WeatherCreateViewSet.as_view({'get': 'get_by_coordinates'})),
     path('weah/', include('rest_framework.urls', namespace='rest_framework')),
 ]

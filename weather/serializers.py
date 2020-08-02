@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import Weather
+from .models import Weather, Location
 
 
-class WeatherSerializer(serializers.HyperlinkedModelSerializer):
+class WeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weather
-        fields = ['country', 'city', 'longitude', 'latitude', 'status', 'temperature', 'temp_feels_like', 'temp_min',
-                  'temp_max', 'pressure', 'humidity', 'visibility', 'wind_speed', 'wind_deg', 'cloud_counter']
+        fields = ['location', 'precipitation', 'temperature', 'temp_feels_like', 'temp_min',
+                  'temp_max', 'pressure', 'humidity', 'visibility', 'wind_speed', 'wind_deg', 'cloud_counter',
+                  'datetime']
 
