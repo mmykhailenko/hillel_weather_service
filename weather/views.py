@@ -7,13 +7,9 @@ from rest_framework.decorators import api_view
 
 
 @api_view(['GET'])
-def snippet_list(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
-    if request.method == 'GET':
-        API_KEY = "4fa4301a4a602a89d861783928c0a919"
-        CITY_NAME = "Odessa"
-        url = "http://api.openweathermap.org/data/2.5/weather?q={}&appid={}".format(CITY_NAME, API_KEY)
-        resp = requests.get(url)
-        return JsonResponse(json.loads(resp.text))
+def index(request, city=None):
+    API_KEY = "4fa4301a4a602a89d861783928c0a919"
+    CITY_NAME = city
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={CITY}&units=metric&appid={API_KEY}'.format(CITY=CITY_NAME,                                                                                                   API_KEY=API_KEY)
+    city_weather = requests.get(url).json() #request the API data and convert the JSON to Python data types
+    return render(request, 'weather/index.html') #returns the index.html template
