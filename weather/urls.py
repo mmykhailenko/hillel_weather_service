@@ -1,16 +1,10 @@
 from django.urls import include, path
-from rest_framework import routers
+from django.conf.urls import url
 from . import views
+from weather.models import Weather
+from django.views.generic import ListView
 
-# router = routers.DefaultRouter()
-# router.register(r'api', views.WeatherViewSet)
-
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', views.WeatherViewSet.as_view()),
-    path('<slug:city>/', views.WeatherCreateViewSet.as_view({'get': 'retrieve'})),
-    path('<int:lat>/<int:lon>/', views.WeatherCreateViewSet.as_view({'get': 'get_by_coordinates'})),
-    path('weah/', include('rest_framework.urls', namespace='rest_framework')),
+    path('', views.WeatherCreateViewSet.as_view({'get': 'list'})),
+    path('post/', views.WeatherCreateViewSet.as_view({'post': 'create'})),
 ]
