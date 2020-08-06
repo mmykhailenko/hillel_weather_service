@@ -31,18 +31,19 @@
 
     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
       <div class="card-body">
-        <form action="/weather/post/" method="POST">
-                        {% csrf_token %}
-                        <div class="field has-addons">
-                            <div class="control is-expanded">
-                                <input class="input" type="text" placeholder="City Name" name="city">
-                            </div>
-                            <div class="control">
-                                <button class="button is-info" type="submit">
-                                    Add City
-                                </button>
-                            </div>
-                        </div></form>
+        <form action="{% url 'weather' %}" method="POST">
+            {% csrf_token %}
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="City Name" name="city">
+                </div>
+                <div class="control">
+                    <button class="button is-info" type="submit">
+                        Add City
+                    </button>
+                </div>
+            </div>
+        </form>
       </div>
     </div>
   </div>
@@ -56,19 +57,19 @@
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
       <div class="card-body">
-        <form action="/weather/post/" method="POST" style="margin-top: 20px">
-                        <div class="field has-addons">
-                            <div class="control is-expanded">
-                                <input class="input" type="text" placeholder="lat" name="lat">
-                            </div>
-                            <div class="control is-expanded">
-                                <input class="input" type="text" placeholder="lon" name="lon">
-                            </div>
-                            <button class="button is-info" type="submit">
-                                    Add city by coordinates
-                                </button>
-                        </div>
-                    </form>
+        <form action="{% url 'weather' %}" method="POST" style="margin-top: 20px">
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="lat" name="lat">
+                </div>
+                <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="lon" name="lon">
+                </div>
+                <button class="button is-info" type="submit">
+                        Add city by coordinates
+                    </button>
+            </div>
+        </form>
       </div>
     </div>
   </div>
@@ -78,31 +79,31 @@
 
         {% for weather in weathers %}
 
-                    <div class="container">
-                        <div class="columns">
-                            <div class="column is-offset-4 is-4">
-                                <div class="box">
-                                    <article class="media">
-                                        <div class="media-left">
-                                            <figure class="image is-50x50">
-                                                <img src={{ weather.flag }} alt="Image">
-                                            </figure>
-                                        </div>
-                                        <div class="media-content">
-                                            <div class="content">
-                                                <p>
-                                                    <span class="title">{{ weather.city }}</span>
-                                                    <br>
-                                                    <span class="subtitle">{{ weather.temperature }}</span>
-                                                    <br> thunderstorm with heavy rain
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </article>
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-offset-4 is-4">
+                        <div class="box">
+                            <article class="media">
+                                <div class="media-left">
+                                    <figure class="image is-50x50">
+                                        <img src={{ weather.flag }} alt="Image">
+                                    </figure>
                                 </div>
-                            </div>
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p>
+                                            <span class="title">{{ weather.city }}</span>
+                                            <br>
+                                            <span class="subtitle">{{ weather.temperature }}</span>
+                                            <br> thunderstorm with heavy rain
+                                        </p>
+                                    </div>
+                                </div>
+                            </article>
                         </div>
                     </div>
+                </div>
+            </div>
 
 
         {% endfor %}

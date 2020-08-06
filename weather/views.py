@@ -1,83 +1,86 @@
-from django.shortcuts import render, redirect
 import requests
-from rest_framework import generics, viewsets
+from django.shortcuts import render, redirect
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from weather.api_key import API_KEY, api_url_city, api_url_coord
-from weather.forms import NameForm, CoordForm
-from weather.models import Weather, Location, Country
+
+from weather.api_key import API_CITY_NAME
+from weather.api_key import COUNTRY_FLAG
+from weather.api_key import API_COORDINATES
+from weather.api_key import API_KEY
+from weather.forms import CoordForm
+from weather.forms import NameForm
+from weather.models import Country
+from weather.models import Location
+from weather.models import Weather
 from weather.serializers import WeatherSerializer
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.views import APIView
 
 
 class WeatherCreateViewSet(viewsets.ModelViewSet):
     queryset = Weather.objects.all()
+    serializer_class = WeatherSerializer
     weather_list = list()
-    context = {'weathers': weather_list}
+    context = {"weathers": weather_list}
 
     def creating(self, resp):
-        country_name = resp['sys']['country']
+        country_name = resp["sys"]["country"]
         country, _ = Country.objects.get_or_create(
             name=country_name,
             defaults={
-                'flag': 'https://www.countryflags.io/{}/shiny/64.png'.format(country_name),
-                'wiki_page': 'TBD'
-            }
+                "flag": COUNTRY_FLAG.format(
+                    country_name
+                ),
+                "wiki_page": "TBD",
+            },
         )
         location, _ = Location.objects.get_or_create(
-            longitude=resp['coord']['lon'],
-            latitude=resp['coord']['lat'],
-            defaults={'city': resp['name'], 'country': country}
+            longitude=resp["coord"]["lon"],
+            latitude=resp["coord"]["lat"],
+            defaults={"city": resp["name"], "country": country},
         )
         weather = self.queryset.create(
-            temperature=resp['main']['temp'],
-            temp_feels_like=resp['main']['feels_like'],
-            temp_min=resp['main']['temp_min'],
-            temp_max=resp['main']['temp_max'],
-            pressure=resp['main']['pressure'],
-            humidity=resp['main']['humidity'],
-            visibility=resp['visibility'],
-            wind_speed=resp['wind']['speed'],
-            wind_deg=resp['wind']['deg']
+            temperature=resp["main"]["temp"],
+            temp_feels_like=resp["main"]["feels_like"],
+            temp_min=resp["main"]["temp_min"],
+            temp_max=resp["main"]["temp_max"],
+            pressure=resp["main"]["pressure"],
+            humidity=resp["main"]["humidity"],
+            visibility=resp["visibility"],
+            wind_speed=resp["wind"]["speed"],
+            wind_deg=resp["wind"]["deg"],
         )
         weather.location.add(location)
         queryset = Weather.objects.get(id=weather.id)
         serializer = WeatherSerializer(queryset)
 
-        for weather_data in serializer.data.get('location'):
+        for weather_data in serializer.data.get("location"):
             res = {
-                'city': weather_data['city'],
-                'temperature': serializer.data.get('temperature'),
-                'flag': weather_data['country']['flag'],
+                "city": weather_data["city"],
+                "temperature": serializer.data.get("temperature"),
+                "flag": weather_data["country"]["flag"],
             }
             self.weather_list.append(res)
 
     def create(self, request, *args, **kwargs):
         form_city = NameForm(request.POST)
         form_coord = CoordForm(request.POST)
+        url = None
         if form_city.is_valid():
-            city = form_city.cleaned_data['city']
-            url = api_url_city.format(city, API_KEY)
-            if url is not None:
-                resp = requests.get(url).json()
-            else:
-                Response("ERROR")
-            self.creating(resp)
-        elif form_coord.is_valid():
-            lat = form_coord.cleaned_data['lat']
-            lon = form_coord.cleaned_data['lon']
-            url = api_url_coord.format(lat, lon, API_KEY)
-            if url is not None:
-                resp = requests.get(url).json()
-            else:
-                Response("ERROR")
-            self.creating(resp)
+            city = form_city.cleaned_data["city"]
+            url = API_CITY_NAME.format(city, API_KEY)
 
-        return redirect('/weather')
+        elif form_coord.is_valid():
+            lat = form_coord.cleaned_data["lat"]
+            lon = form_coord.cleaned_data["lon"]
+            url = API_COORDINATES.format(lat, lon, API_KEY)
+
+        if url is not None:
+            resp = requests.get(url).json()
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        self.creating(resp)
+
+        return redirect("/weather")
 
     def list(self, request, *args, **kwargs):
-        queryset = Weather.objects.all()
-        serializer = WeatherSerializer(queryset, many=True)
-        return render(request, 'weather/index.html', self.context)
-
-
+        super().list(request, *args, **kwargs)
+        return render(request, "weather/index.html", {"weathers": self.weather_list})

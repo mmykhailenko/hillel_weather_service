@@ -9,12 +9,14 @@ class Country(models.Model):
 
 class Location(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
+    country = models.ForeignKey(
+        Country, on_delete=models.CASCADE, null=True, blank=True
+    )
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('longitude', 'latitude')
+        unique_together = ("longitude", "latitude")
 
 
 class Weather(models.Model):

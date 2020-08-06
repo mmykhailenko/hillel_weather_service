@@ -7,28 +7,33 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('weather', '0002_auto_20200805_1007'),
+        ("weather", "0002_auto_20200805_1007"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='location',
-            name='city',
+            model_name="location",
+            name="city",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='country',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='weather.Country'),
+            model_name="location",
+            name="country",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="weather.Country",
+            ),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='latitude',
+            model_name="location",
+            name="latitude",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='longitude',
+            model_name="location",
+            name="longitude",
             field=models.FloatField(blank=True, null=True),
         ),
     ]

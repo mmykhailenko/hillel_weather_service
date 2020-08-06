@@ -4,13 +4,12 @@ from .models import Weather, Location, Country
 
 
 class CountrySimpleSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Country
         fields = (
-            'name',
-            'flag',
-            'wiki_page',
+            "name",
+            "flag",
+            "wiki_page",
         )
 
 
@@ -20,10 +19,10 @@ class LocationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = (
-            'city',
-            'country',
-            'longitude',
-            'latitude',
+            "city",
+            "country",
+            "longitude",
+            "latitude",
         )
 
 
@@ -33,16 +32,15 @@ class WeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weather
         fields = (
-            'id',
-            'temperature',
-            'temp_feels_like',
-            'temp_min',
-            'temp_max',
-            'pressure',
-            'humidity',
-            'visibility',
-            'wind_deg',
-            'wind_speed',
-            'location',
+            "id",
+            "temperature",
+            "temp_feels_like",
+            "temp_min",
+            "temp_max",
+            "pressure",
+            "humidity",
+            "visibility",
+            "wind_deg",
+            "wind_speed",
+            "location",
         )
-

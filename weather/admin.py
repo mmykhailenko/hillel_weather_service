@@ -1,5 +1,6 @@
 from django.contrib import admin
-from . models import Weather, Location, Country
+from .models import Weather, Location, Country
+
 admin.site.register(Weather)
 admin.site.register(Location)
 admin.site.register(Country)

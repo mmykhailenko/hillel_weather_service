@@ -8,44 +8,82 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Country',
+            name="Country",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=3)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=3)),
             ],
         ),
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('city', models.CharField(blank=True, max_length=20, null=True)),
-                ('longitude', models.FloatField(blank=True, null=True)),
-                ('latitude', models.FloatField(blank=True, null=True)),
-                ('country', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='weather.Country')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("city", models.CharField(blank=True, max_length=20, null=True)),
+                ("longitude", models.FloatField(blank=True, null=True)),
+                ("latitude", models.FloatField(blank=True, null=True)),
+                (
+                    "country",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="weather.Country",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Weather',
+            name="Weather",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('precipitation', models.CharField(max_length=20)),
-                ('temperature', models.FloatField()),
-                ('temp_feels_like', models.FloatField()),
-                ('temp_min', models.FloatField()),
-                ('temp_max', models.FloatField()),
-                ('pressure', models.IntegerField()),
-                ('humidity', models.IntegerField()),
-                ('visibility', models.IntegerField()),
-                ('wind_speed', models.FloatField()),
-                ('wind_deg', models.FloatField()),
-                ('cloud_counter', models.IntegerField()),
-                ('datetime', models.DateTimeField(blank=True, null=True)),
-                ('location', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='weather.Location')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("precipitation", models.CharField(max_length=20)),
+                ("temperature", models.FloatField()),
+                ("temp_feels_like", models.FloatField()),
+                ("temp_min", models.FloatField()),
+                ("temp_max", models.FloatField()),
+                ("pressure", models.IntegerField()),
+                ("humidity", models.IntegerField()),
+                ("visibility", models.IntegerField()),
+                ("wind_speed", models.FloatField()),
+                ("wind_deg", models.FloatField()),
+                ("cloud_counter", models.IntegerField()),
+                ("datetime", models.DateTimeField(blank=True, null=True)),
+                (
+                    "location",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="weather.Location",
+                    ),
+                ),
             ],
         ),
     ]
