@@ -14,6 +14,15 @@ from weather.models import Location
 from weather.models import Weather
 from weather.serializers import WeatherSerializer
 
+from rest_framework_swagger.views import get_swagger_view
+from django.conf.urls import url
+
+schema_view = get_swagger_view(title='Pastebin API')
+
+urlpatterns = [
+    url(r'^$', schema_view)
+]
+
 
 class WeatherCreateViewSet(viewsets.ModelViewSet):
     queryset = Weather.objects.all()
