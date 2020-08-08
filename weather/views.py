@@ -5,7 +5,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
-
+from weather.api_key import API_CITY_NAME
+from weather.api_key import API_COORDINATES
 from weather.api_key import COUNTRY_FLAG
 from weather.api_key import API_URL
 from weather.api_key import API_KEY
