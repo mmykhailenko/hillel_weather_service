@@ -68,16 +68,7 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
         weather.location.add(location)
         queryset = Weather.objects.get(id=weather.id)
         serializer = WeatherSerializer(queryset)
-
-        weather_list = list()
-        for weather_data in serializer.data.get('location'):
-            res = {
-                'city': weather_data['city'],
-                'temperature': serializer.data.get('temperature'),
-                'flag': weather_data['country']['flag'],
-            }
-            weather_list.append(res)
-        context = {'weathers': weather_list}
+        context = {'weathers': serializer.data}
         return JsonResponse(context)
 
 
