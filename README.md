@@ -1,5 +1,9 @@
 # hillel_weather_service
 
+Before building images, create the '.env_bot' file in the 'docker/bot/' directory:
+cp .env.example .env_bot
+And fill in the required variables.
+
 To build images for web and bot:
 docker-compose build --no-cache web bot
 
