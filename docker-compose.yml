@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./docker/web/Dockerfile
+    ports:
+      - 127.0.0.1:8000:8000
+    entrypoint: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  bot:
+    restart: unless-stopped
+    build: ./docker/bot
+    depends_on:
+      - web
