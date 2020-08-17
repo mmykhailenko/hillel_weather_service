@@ -1,15 +1,9 @@
-import json
-
 import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
-from weather.api_key import API_CITY_NAME
-from weather.api_key import API_COORDINATES
-from weather.api_key import COUNTRY_FLAG
-from weather.api_key import API_URL
-from weather.api_key import API_KEY
+
 from weather.forms import CoordForm
 from weather.forms import NameForm
 from weather.models import Country
@@ -21,6 +15,8 @@ from rest_framework_swagger.views import get_swagger_view
 from django.conf.urls import url
 
 from utils import get_wiki_page
+from utils import get_country_flag
+from utils import construct_url
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -34,11 +30,10 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
     serializer_class = WeatherSerializer
 
     def get(self, request, location):
-        url = None
-        if location.startswith('lon') or location.startswith('lat'):
-            url = API_URL.format(location, API_KEY)
-        elif location.startswith('q'):
-            url = API_URL.format(location, API_KEY)
+        try:
+            url = construct_url.UrlConstructor.construct_url_by_location(location)
+        except Exception as exc:
+            return exc.__doc__
         if url is not None:
             resp = requests.get(url).json()
         else:
@@ -47,7 +42,7 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
         country, _ = Country.objects.get_or_create(
             name=country_name,
             defaults={
-                'flag': COUNTRY_FLAG.format(country_name),
+                'flag': get_country_flag.CountryFlagRetrieve.get_country_flag(country_name),
                 'wiki_page': get_wiki_page.WikiPageRetrieve.get_wiki_page_by_country_code(country_name)
             }
         )
@@ -85,9 +80,7 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
         country, _ = Country.objects.get_or_create(
             name=country_name,
             defaults={
-                "flag": COUNTRY_FLAG.format(
-                    country_name
-                ),
+                "flag": get_country_flag.CountryFlagRetrieve.get_country_flag(country_name),
                 "wiki_page": get_wiki_page.WikiPageRetrieve.get_wiki_page_by_country_code(country_name),
             },
         )
@@ -126,12 +119,12 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
         url = None
         if form_city.is_valid():
             city = form_city.cleaned_data["city"]
-            url = API_CITY_NAME.format(city, API_KEY)
+            url = construct_url.UrlConstructor.construct_url_by_city(city)
 
         elif form_coord.is_valid():
             lat = form_coord.cleaned_data["lat"]
             lon = form_coord.cleaned_data["lon"]
-            url = API_COORDINATES.format(lat, lon, API_KEY)
+            url = construct_url.UrlConstructor.construct_url_by_coordinates(lat, lon)
 
         if url is not None:
             resp = requests.get(url).json()
