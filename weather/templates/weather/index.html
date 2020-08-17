@@ -87,6 +87,7 @@
                                 <div class="media-left">
                                     <figure class="image is-50x50">
                                         <img src={{ weather.flag }} alt="Image">
+                                        <a href=" {{ weather.wiki_page }} "> Wiki </a>
                                     </figure>
                                 </div>
                                 <div class="media-content">
@@ -94,7 +95,7 @@
                                         <p>
                                             <span class="title">{{ weather.city }}</span>
                                             <br>
-                                            <span class="subtitle">{{ weather.temperature }}</span>
+                                            <span class="subtitle">{{ weather.temperature }}&deg;</span>
                                             <br> thunderstorm with heavy rain
                                         </p>
                                     </div>

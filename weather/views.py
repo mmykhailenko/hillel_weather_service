@@ -20,6 +20,8 @@ from weather.serializers import WeatherSerializer
 from rest_framework_swagger.views import get_swagger_view
 from django.conf.urls import url
 
+from utils import get_wiki_page
+
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
@@ -46,7 +48,7 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
             name=country_name,
             defaults={
                 'flag': COUNTRY_FLAG.format(country_name),
-                'wiki_page': 'TBD'
+                'wiki_page': get_wiki_page.WikiPageRetrieve.get_wiki_page_by_country_code(country_name)
             }
         )
         location, _ = Location.objects.get_or_create(
@@ -86,7 +88,7 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
                 "flag": COUNTRY_FLAG.format(
                     country_name
                 ),
-                "wiki_page": "TBD",
+                "wiki_page": get_wiki_page.WikiPageRetrieve.get_wiki_page_by_country_code(country_name),
             },
         )
         location, _ = Location.objects.get_or_create(
@@ -114,6 +116,7 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
                 "city": weather_data["city"],
                 "temperature": serializer.data.get("temperature"),
                 "flag": weather_data["country"]["flag"],
+                "wiki_page": weather_data["country"]["wiki_page"]
             }
             self.weather_list.append(res)
 
