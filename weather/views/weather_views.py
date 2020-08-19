@@ -6,10 +6,12 @@ from rest_framework.response import Response
 
 from weather.forms import CoordForm
 from weather.forms import NameForm
-from weather.models import Country
-from weather.models import Location
-from weather.models import Weather
-from weather.serializers import WeatherSerializer
+
+from weather.models.country_models import Country
+from weather.models.location_models import Location
+from weather.models.weather_models import Weather
+
+from weather.serializers.weather_serializers import WeatherSerializer
 
 from rest_framework_swagger.views import get_swagger_view
 from django.conf.urls import url
@@ -60,7 +62,8 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
             humidity=resp['main']['humidity'],
             visibility=resp['visibility'],
             wind_speed=resp['wind']['speed'],
-            wind_deg=resp['wind']['deg']
+            wind_deg=resp['wind']['deg'],
+            description=resp['weather'][0]['description'],
         )
         weather.location.add(location)
         queryset = Weather.objects.get(id=weather.id)
@@ -99,6 +102,7 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
             visibility=resp["visibility"],
             wind_speed=resp["wind"]["speed"],
             wind_deg=resp["wind"]["deg"],
+            description=resp["weather"][0]["description"],
         )
         weather.location.add(location)
         queryset = Weather.objects.get(id=weather.id)
@@ -109,7 +113,8 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
                 "city": weather_data["city"],
                 "temperature": serializer.data.get("temperature"),
                 "flag": weather_data["country"]["flag"],
-                "wiki_page": weather_data["country"]["wiki_page"]
+                "wiki_page": weather_data["country"]["wiki_page"],
+                "description": serializer.data.get("description"),
             }
             self.weather_list.append(res)
 
