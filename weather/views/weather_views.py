@@ -27,11 +27,46 @@ urlpatterns = [
 ]
 
 
+def serialize_response(resp):
+    country_name = resp["sys"]["country"]
+    country, _ = Country.objects.get_or_create(
+        name=country_name,
+        defaults={
+            'flag': CountryFlagRetrieve.get_country_flag(country_name),
+            'wiki_page': WikiPageRetrieve.get_wiki_page_by_country_code(country_name)}
+    )
+
+    location, _ = Location.objects.get_or_create(
+        longitude=resp['coord']['lon'],
+        latitude=resp['coord']['lat'],
+        defaults={'city': resp['name'], 'country': country}
+    )
+
+    weather = Weather.objects.create(
+        temperature=resp['main']['temp'],
+        temp_feels_like=resp['main']['feels_like'],
+        temp_min=resp['main']['temp_min'],
+        temp_max=resp['main']['temp_max'],
+        pressure=resp['main']['pressure'],
+        humidity=resp['main']['humidity'],
+        visibility=resp['visibility'],
+        wind_speed=resp['wind']['speed'],
+        wind_deg=resp['wind']['deg'],
+        description=resp['weather'][0]['description'],
+    )
+
+    weather.location.add(location)
+    queryset = Weather.objects.get(id=weather.id)
+    serializer = WeatherSerializer(queryset)
+    return serializer
+
+
 class WeatherRetrieveViewSet(generics.RetrieveAPIView):
     queryset = Weather.objects.all()
     serializer_class = WeatherSerializer
 
     def get(self, request, location):
+
         try:
             url = UrlConstructor.by_location(location)
         except Exception as exc:
@@ -40,34 +75,8 @@ class WeatherRetrieveViewSet(generics.RetrieveAPIView):
             resp = requests.get(url).json()
         else:
             return JsonResponse("Error")
-        country_name = resp["sys"]["country"]
-        country, _ = Country.objects.get_or_create(
-            name=country_name,
-            defaults={
-                'flag': CountryFlagRetrieve.get_country_flag(country_name),
-                'wiki_page': WikiPageRetrieve.get_wiki_page_by_country_code(country_name)
-            }
-        )
-        location, _ = Location.objects.get_or_create(
-            longitude=resp['coord']['lon'],
-            latitude=resp['coord']['lat'],
-            defaults={'city': resp['name'], 'country': country}
-        )
-        weather = Weather.objects.create(
-            temperature=resp['main']['temp'],
-            temp_feels_like=resp['main']['feels_like'],
-            temp_min=resp['main']['temp_min'],
-            temp_max=resp['main']['temp_max'],
-            pressure=resp['main']['pressure'],
-            humidity=resp['main']['humidity'],
-            visibility=resp['visibility'],
-            wind_speed=resp['wind']['speed'],
-            wind_deg=resp['wind']['deg'],
-            description=resp['weather'][0]['description'],
-        )
-        weather.location.add(location)
-        queryset = Weather.objects.get(id=weather.id)
-        serializer = WeatherSerializer(queryset)
+
+        serializer = serialize_response(resp)
         context = {'weathers': serializer.data}
         return JsonResponse(context)
 
@@ -79,34 +88,8 @@ class WeatherCreateViewSet(viewsets.ModelViewSet):
     context = {"weathers": weather_list}
 
     def creating(self, resp):
-        country_name = resp["sys"]["country"]
-        country, _ = Country.objects.get_or_create(
-            name=country_name,
-            defaults={
-                "flag": CountryFlagRetrieve.get_country_flag(country_name),
-                "wiki_page": WikiPageRetrieve.get_wiki_page_by_country_code(country_name),
-            },
-        )
-        location, _ = Location.objects.get_or_create(
-            longitude=resp["coord"]["lon"],
-            latitude=resp["coord"]["lat"],
-            defaults={"city": resp["name"], "country": country},
-        )
-        weather = self.queryset.create(
-            temperature=resp["main"]["temp"],
-            temp_feels_like=resp["main"]["feels_like"],
-            temp_min=resp["main"]["temp_min"],
-            temp_max=resp["main"]["temp_max"],
-            pressure=resp["main"]["pressure"],
-            humidity=resp["main"]["humidity"],
-            visibility=resp["visibility"],
-            wind_speed=resp["wind"]["speed"],
-            wind_deg=resp["wind"]["deg"],
-            description=resp["weather"][0]["description"],
-        )
-        weather.location.add(location)
-        queryset = Weather.objects.get(id=weather.id)
-        serializer = WeatherSerializer(queryset)
+
+        serializer = serialize_response(resp)
 
         for weather_data in serializer.data.get("location"):
             res = {
