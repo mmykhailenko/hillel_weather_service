@@ -13,18 +13,9 @@ from weather.models.weather_models import Weather
 
 from weather.serializers.weather_serializers import WeatherSerializer
 
-from rest_framework_swagger.views import get_swagger_view
-from django.conf.urls import url
-
 from utils.get_wiki_page import WikiPageRetrieve
 from utils.get_country_flag import CountryFlagRetrieve
 from utils.construct_url import UrlConstructor
-
-schema_view = get_swagger_view(title='Pastebin API')
-
-urlpatterns = [
-    url(r'^$', schema_view)
-]
 
 
 def serialize_response(resp):
