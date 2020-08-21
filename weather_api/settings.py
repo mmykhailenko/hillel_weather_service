@@ -25,7 +25,7 @@ SECRET_KEY = '%gop-r5wyi4)e(a#ic$2dc91c=3(ua(6ajyif%hffq1pn$vw^-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hillel-weather-service.herokuapp.com', 'web', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
