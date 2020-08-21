@@ -23,3 +23,5 @@ pycountry==20.7.3
 pytelegrambotapi==3.7.2
 python-dotenv==0.14.0
 emojiflags==0.1.1
+gunicorn==20.0.4
+psycopg2-binary==2.8.5
