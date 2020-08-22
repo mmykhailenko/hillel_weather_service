@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    machine: true
+
+    working_directory: ~/weather_service
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t maxis110/hillel-weather-bot:$CIRCLE_SHA1 -f ./docker/bot/Dockerfile .
+            docker build -t maxis110/hillel-weather-web:$CIRCLE_SHA1 -f ./docker/web/Dockerfile .
+      - run:
+          name: Push to DockerHub
+          command: |
+            docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
+
+            docker push maxis110/hillel-weather-bot:$CIRCLE_SHA1
+            docker push maxis110/hillel-weather-web:$CIRCLE_SHA1
+      - run:
+          name: Deploy to Heroku
+          command: |
+             docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+
+             docker tag maxis110/hillel-weather-bot:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_BOT/web
+             docker push registry.heroku.com/$HEROKU_APP_NAME_BOT/web
+
+             docker tag maxis110/hillel-weather-web:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_WEB/web
+             docker push registry.heroku.com/$HEROKU_APP_NAME_WEB/web
+      - run:
+          name: Check images
+          command: docker images
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: deploy_config
