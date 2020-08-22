@@ -2,7 +2,7 @@ FROM python:3.7.8-slim-stretch
 
 WORKDIR /root/weather_bot
 
-ADD  .  ./
+ADD docker/bot/bot_implementation.py /root/weather_bot
 
 RUN pip install requests==2.24.0 \
     pytelegrambotapi==3.7.2 \
