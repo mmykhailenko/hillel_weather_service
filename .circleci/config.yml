@@ -3,7 +3,7 @@ jobs:
   build:
     machine: true
 
-    working_directory: ~/weather_service
+    working_directory: ~/weather_web
 
     steps:
       - checkout
