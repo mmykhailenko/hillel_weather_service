@@ -25,11 +25,11 @@ jobs:
           command: |
              docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
 
-             docker tag maxis110/hillel-weather-bot:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_BOT/web
-             docker push registry.heroku.com/$HEROKU_APP_NAME_BOT/web
+#             docker tag maxis110/hillel-weather-bot:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_BOT/web
+#             docker push registry.heroku.com/$HEROKU_APP_NAME_BOT/web
 
-#             docker tag maxis110/hillel-weather-web:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_WEB/web
-#             docker push registry.heroku.com/$HEROKU_APP_NAME_WEB/web
+             docker tag maxis110/hillel-weather-web:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME_WEB/web
+             docker push registry.heroku.com/$HEROKU_APP_NAME_WEB/web
       - run:
           name: Check images
           command: docker images
