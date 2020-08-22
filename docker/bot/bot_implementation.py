@@ -19,10 +19,17 @@ def start(message):
 def handle_location(message):
     url = f"http://{weather_api_host}:{weather_api_port}/weather/lat={message.location.latitude}&lon={message.location.longitude}"
     resp = requests.get(url).json()
-    final_message = f"Город: {resp['weathers']['location'][0]['city']}" \
+    final_message = f"<b>Город:</b> {resp['weathers']['location'][0]['city']}" \
                     f"{lookup(resp['weathers']['location'][0]['country']['name'])}\n" \
-                    f"Температура: {resp['weathers']['temperature']} "
-    bot.send_message(message.chat.id, final_message)
+                    f"<b>Температура:</b> 🌡️ {resp['weathers']['temp_min']}°C...{resp['weathers']['temp_max']}°C\n"\
+                    f"\n" \
+                    f"<b>Сейчас:</b> {resp['weathers']['temperature']}°C\n" \
+                    f"\n" \
+                    f"<b>Давление:</b> {resp['weathers']['pressure']} HPA\n" \
+                    f"<b>Влажность:</b> 💧 {resp['weathers']['humidity']}%\n" \
+                    f"<b>Скорость ветра:</b> 💨 {resp['weathers']['wind_speed']} м/с\n" \
+                    f"<b>Description:</b> 📄 {resp['weathers']['description']} \n"
+    bot.send_message(message.chat.id, final_message, parse_mode='HTML')
 
 
 @bot.message_handler(content_types=['text'])
@@ -32,12 +39,19 @@ def mess(message):
     url = f"http://{weather_api_host}:{weather_api_port}/weather/q={get_message_bot}"
     try:
         resp = requests.get(url).json()
-        final_message = f"Город: {resp['weathers']['location'][0]['city']}" \
+        final_message = f"<b>Город:</b> {resp['weathers']['location'][0]['city']}" \
                         f"{lookup(resp['weathers']['location'][0]['country']['name'])}\n" \
-                        f"Температура: {resp['weathers']['temperature']}"
-        bot.send_message(message.chat.id, final_message)
+                        f"<b>Температура:</b> 🌡️ {resp['weathers']['temp_min']}°C...{resp['weathers']['temp_max']}°C\n"\
+                        f"\n" \
+                        f"<b>Сейчас:</b> {resp['weathers']['temperature']}°C\n" \
+                        f"\n" \
+                        f"<b>Давление:</b> {resp['weathers']['pressure']} HPA\n" \
+                        f"<b>Влажность:</b> 💧 {resp['weathers']['humidity']}%\n" \
+                        f"<b>Скорость ветра:</b> 💨 {resp['weathers']['wind_speed']} м/с\n" \
+                        f"<b>Description:</b> 📄 {resp['weathers']['description']} \n"
+        bot.send_message(message.chat.id, final_message, parse_mode='HTML')
     except Exception:
-        bot.send_message(message.chat.id, 'Ошибка\nПопробуйте еще раз')
+        bot.send_message(message.chat.id, 'Ошибка!\nГород не найден!\nПопробуйте еще раз')
         logging.exception('')
 
 
