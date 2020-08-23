@@ -5,8 +5,9 @@ WORKDIR /root/weather_web
 ADD weather /root/weather_web/weather
 ADD weather_api /root/weather_web/weather_api
 ADD utils /root/weather_web/utils
-ADD manage.py requirements.txt ./
+ADD manage.py requirements.txt .env  wait-for-it.sh  ./
 
-RUN pip install -r requirements.txt
+RUN chmod +x wait-for-it.sh && \
+    pip install -r requirements.txt
 
 CMD python manage.py runserver 0.0.0.0:8000
