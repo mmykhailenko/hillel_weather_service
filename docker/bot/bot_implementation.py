@@ -45,5 +45,7 @@ def mess(message):
 
 if __name__ == "__main__":
     bot.remove_webhook()
-    bot.set_webhook(url=f'{WEATHER_API_HOST}/{config.TELEGRAM_TOKEN}')
+    url = f'{WEATHER_API_HOST}/{config.TELEGRAM_TOKEN}'
+    print(url)
+    bot.set_webhook(url=url)
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
