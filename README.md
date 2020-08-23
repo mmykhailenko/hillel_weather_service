@@ -31,7 +31,7 @@ For local deployment use docker-compose-local.yml. It includes the following ser
 <br>
 First of all, rebuild local images for web and bot. Make sure that .env for web and .env_bot for bot contain up-to-date vars:<br>
 ```
-docker-compose -f docker-compose-local.yml build web bot<br>
+docker-compose -f docker-compose-local.yml build web bot
 ```
 Up all the services from docker-compose-local.yml:
 ```

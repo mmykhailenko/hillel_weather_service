@@ -36,7 +36,6 @@ def handle_location(message):
 
 @bot.message_handler(content_types=['text'])
 def mess(message):
-    final_message = ""
     get_message_bot = message.text.strip().lower()
     url = f"http://{weather_api_host}/weather/q={get_message_bot}"
     try:
