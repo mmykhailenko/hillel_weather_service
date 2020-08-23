@@ -1,9 +1,13 @@
+import os
+
 from emojiflags.lookup import lookup
 import telebot
 import requests
+from flask import Flask
 import config
 import logging
 
+server = Flask(__name__)
 bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
 WEATHER_API_HOST = config.weather_api_host
 
@@ -39,4 +43,7 @@ def mess(message):
         logging.exception('')
 
 
-bot.polling(none_stop=True)
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=f'{WEATHER_API_HOST}/{config.TELEGRAM_TOKEN}')
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
