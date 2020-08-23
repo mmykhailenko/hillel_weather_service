@@ -1,4 +1,6 @@
-from weather.api_key import COUNTRY_FLAG_HOST
+import os
+
+COUNTRY_FLAG_HOST = os.environ.get("COUNTRY_FLAG_HOST")
 
 
 class CountryFlagRetrieve(object):
