@@ -1,6 +1,7 @@
-from weather.api_key import PUBLIC_WEATHER_API_KEY
-from weather.api_key import PUBLIC_WEATHER_API_PATH
-from weather.api_key import PUBLIC_WEATHER_API_UNITS
+import os
+PUBLIC_WEATHER_API_KEY = os.environ.get("PUBLIC_WEATHER_API_KEY")
+PUBLIC_WEATHER_API_PATH = os.environ.get("PUBLIC_WEATHER_API_PATH")
+PUBLIC_WEATHER_API_UNITS = os.environ.get("PUBLIC_WEATHER_API_UNITS")
 
 
 class UrlConstructor(object):

@@ -1,14 +1,12 @@
 from emojiflags.lookup import lookup
 import telebot
 import requests
+import config
 import logging
-import os
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-
-bot = telebot.TeleBot(TELEGRAM_TOKEN)
-
-weather_api_host = os.environ.get("WEATHER_API_HOST")
+bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
+weather_api_host = config.weather_api_host
+weather_api_port = config.weather_api_port
 
 
 @bot.message_handler(commands=['start'])
@@ -19,7 +17,7 @@ def start(message):
 
 @bot.message_handler(content_types=['location'])
 def handle_location(message):
-    url = f"http://{weather_api_host}/weather/lat={message.location.latitude}&lon={message.location.longitude}"
+    url = f"http://{weather_api_host}:{weather_api_port}/weather/lat={message.location.latitude}&lon={message.location.longitude}"
     resp = requests.get(url).json()
     final_message = f"Город: {resp['weathers']['location'][0]['city']}" \
                     f"{lookup(resp['weathers']['location'][0]['country']['name'])}\n" \
@@ -31,7 +29,7 @@ def handle_location(message):
 def mess(message):
     final_message = ""
     get_message_bot = message.text.strip().lower()
-    url = f"http://{weather_api_host}/weather/q={get_message_bot}"
+    url = f"http://{weather_api_host}:{weather_api_port}/weather/q={get_message_bot}"
     try:
         resp = requests.get(url).json()
         final_message = f"Город: {resp['weathers']['location'][0]['city']}" \

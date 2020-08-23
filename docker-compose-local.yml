@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     build:
       context: ./
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: ./docker/web/Dockerfile-local
     env_file:
       - ./.env
     ports:
@@ -16,7 +16,9 @@ services:
 
   bot:
     restart: unless-stopped
-    build: ./docker/bot
+    build:
+      context: ./docker/bot
+      dockerfile: Dockerfile-local
     depends_on:
       - web
 
