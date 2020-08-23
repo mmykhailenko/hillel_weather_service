@@ -3,7 +3,7 @@ import os
 from emojiflags.lookup import lookup
 import telebot
 import requests
-from flask import Flask
+from flask import Flask, request
 import config
 import logging
 
@@ -41,6 +41,12 @@ def mess(message):
     except Exception:
         bot.send_message(message.chat.id, 'Ошибка\nПопробуйте еще раз')
         logging.exception('')
+
+
+@server.route('/' + config.TELEGRAM_TOKEN, methods=['POST'])
+def getMessage():
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
 
 
 if __name__ == "__main__":
